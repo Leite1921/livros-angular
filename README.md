@@ -1,59 +1,58 @@
-# LivrosAngular
+# Catálogo de Livros (DGT2809)
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.39.
+Trabalho prático da disciplina DGT2809: catálogo de livros em Angular, com NgModule, serviços injetáveis, rotas e formulário com `ngModel`.
 
-## Development server
+- Angular 20 (CLI 20.3), com projeto NgModule (`--no-standalone`). O Angular 18 não suporta o Node 24 usado no desenvolvimento.
+- Os arquivos foram renomeados/gerados com os sufixos clássicos (`app.module.ts`, `*.component.ts`, `*.service.ts`) para seguir o enunciado.
+- Bootstrap 5.3.3 via CDN em `src/index.html`.
 
-To start a local development server, run:
-
-```bash
-ng serve
-```
-
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+## Como instalar
 
 ```bash
-ng generate component component-name
+npm install
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Como rodar
 
 ```bash
-ng generate --help
+npx ng serve
 ```
 
-## Building
+Acesse http://localhost:4200/. A raiz redireciona para `/lista`.
 
-To build the project run:
+Para gerar o build: `npx ng build`.
 
-```bash
-ng build
-```
+## Checklist do enunciado
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+### 1º Procedimento: listagem de livros
 
-## Running unit tests
+| Item | Arquivo |
+| --- | --- |
+| Classe `Editora` (`codEditora`, `nome`) | `src/app/editora.ts` |
+| Classe `Livro` (`codigo`, `codEditora`, `titulo`, `resumo`, `autores`) com construtor padrão | `src/app/livro.ts` |
+| `ControleEditoraService` com vetor `editoras`, `getEditoras()` e `getNomeEditora()` usando `filter` | `src/app/controle-editora.service.ts` |
+| `ControleLivrosService` com vetor `livros`, `obterLivros()`, `incluir()` (maior código + 1) e `excluir()` usando `findIndex`/`splice` | `src/app/controle-livros.service.ts` |
+| Serviços no vetor `providers` | `src/app/app.module.ts` |
+| Bootstrap via CDN e título "Catálogo de Livros" | `src/index.html` |
+| `LivroListaComponent` com `editoras`, `livros`, `servEditora`, `servLivros`, `ngOnInit`, `excluir` e `obterNome` (arrow functions) | `src/app/livro-lista/livro-lista.component.ts` |
+| Tabela com `*ngFor`, botão Excluir, editora e lista de autores | `src/app/livro-lista/livro-lista.component.html` |
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+### 2º Procedimento: cadastro e navegação
 
-```bash
-ng test
-```
+| Item | Arquivo |
+| --- | --- |
+| `FormsModule` no vetor `imports` | `src/app/app.module.ts` |
+| Rotas `lista`, `dados` e redirecionamento de `''` para `/lista` | `src/app/app-routing.module.ts` |
+| Menu `nav` com `routerLink` e `<router-outlet>` | `src/app/app.component.html` |
+| `LivroDadosComponent` com `livro`, `autoresForm`, `editoras`, `servEditora`, `servLivros`, `router`, `ngOnInit` e `incluir` (arrow function) | `src/app/livro-dados/livro-dados.component.ts` |
+| Formulário com `ngNativeValidate`, `[(ngModel)]`, `name` em todos os campos e `select` de editoras com `[ngValue]` | `src/app/livro-dados/livro-dados.component.html` |
 
-## Running end-to-end tests
+## Roteiro de testes manuais
 
-For end-to-end (e2e) testing, run:
+1. Abrir http://localhost:4200/ e confirmar o redirecionamento para `/lista` com 3 livros.
+2. Clicar em **Excluir** em um livro e conferir que ele some da tabela.
+3. Clicar em **Novo** no menu e tentar enviar o formulário vazio: o navegador bloqueia por falta de título.
+4. Preencher só o título e enviar: o navegador bloqueia por falta de editora.
+5. Preencher título, resumo, editora e autores (um por linha) e clicar em **Incluir**: volta para a lista com o novo livro, o nome da editora e os autores em lista.
 
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+> Os dados ficam em memória: ao recarregar a página, a lista volta aos 3 livros iniciais.
